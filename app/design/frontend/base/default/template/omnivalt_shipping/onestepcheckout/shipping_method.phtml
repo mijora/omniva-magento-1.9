@@ -1,0 +1,77 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magentocommerce.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magentocommerce.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2010 Magento Inc. (http://www.magentocommerce.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php if (!($_shippingRateGroups = $this->getShippingRates())): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+    <?php $i=0;?>
+    <dl class="sp-methods">
+        <?php $_sole = count($_shippingRateGroups) == 1; foreach ($_shippingRateGroups as $code => $_rates): ?>
+            <?php $i++;?>
+            <dt><?php echo $this->getCarrierName($code) ?></dt>
+            <dd>
+                <ul>
+                    <?php $j=0;?>
+                    <?php $_sole = $_sole && count($_rates) == 1; foreach ($_rates as $_rate): ?>
+                    <?php $j++;?>
+                    <li>
+                        <?php if ($_rate->getErrorMessage()): ?>
+                            <ul class="messages"><li class="error-msg"><ul><li><?php echo $_rate->getErrorMessage() ?></li></ul></li></ul>
+                        <?php else: ?>
+                            <?php if ($_sole) : ?>
+                                <span class="no-display"><input class="validate-one-required-by-name" name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" onclick="save_shipping_method(shipping_method_url, update_shipping_payment, update_shipping_review);" /></span>
+                            <?php else: ?>
+                                <?php if($i!=count($_shippingRateGroups) ||$j!=count($_rates)):?>
+                                    <style type="text/css">
+                                        #advice-validate-one-required-by-name-s_method_<?php echo$_rate->getCode()?>{
+                                            display: none !important;
+                                        }
+                                    </style>
+                                <?php endif;?>                                   
+                                <input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>"<?php if($code===Mage::getStoreConfig('onestepcheckout/general/default_shipping',Mage::app()->getStore()->getStoreId())) echo ' checked="checked"' ?> class="radio validate-one-required-by-name" onclick="save_shipping_method(shipping_method_url, update_shipping_payment, update_shipping_review);" />
+                            <?php endif; ?>
+                            <label for="s_method_<?php echo $_rate->getCode() ?>"><?php echo $_rate->getMethodTitle() ?>
+                            <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                            <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+                            <?php echo $_excl; ?>
+                            <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                            <?php endif; ?>
+                            </label>
+							
+							<?php /* Begin: ADEO WEB / LPExpress / 01 */ ?>
+							<?php //$this->getChild('adeoweb_lpexpress_method_information')->setData('rate', $_rate); ?>
+							<?php //echo $this->getChildHtml('adeoweb_lpexpress_method_information', false); ?>
+							<?php /* End: ADEO WEB / LPExpress / 01 */ ?>
+							
+                       <?php endif ?>
+                    </li>                    <?php if ($_rate->getCode() == "omnivalt_PARCEL_TERMINAL"){ ?>                    <li class = "omnivalt-parcel-terminal-list" style = "display:none;">                      <?php $obj = Mage::getModel('Omnivalt_Shipping_Model_Carrier');                       $country = $this->getQuote()->getShippingAddress()->getCountry();                      $locs = $obj->getCode('terminal', $country); ?>                      <?php $quote_terminal = (int)trim($this->getQuote()->getParcelTerminal()); ?>                      <select name = "omnivalt_parcel_terminal" id = "omnivalt_parcel_terminal_list" class = "select2" style = "width:100%">                        <option value = ""><?php echo __('Select parcel terminal'); ?></option>                        <?php                        $grouped_options = array();                        foreach ($locs as $key=>$loc){                          if (!isset($grouped_options[$loc['city']]))                            $grouped_options[$loc['city']] = array();                          $grouped_options[(string)$loc['city']][(string)$key] = $loc;                        }                        foreach ($grouped_options as $city=>$locs){                          echo '<optgroup label = "'.$city.'">';                          foreach ($locs as $key=>$loc){                            echo '<option value = "'.$key.'" '.($key == $quote_terminal?'selected':'').'>'.$loc['name'].'</option>';                          }                          echo '</optgroup>';                        }                        ?>                      </select>                    </li>                    <?php } ?>
+                <?php endforeach; ?>
+                </ul>
+            </dd>
+        <?php endforeach; ?>
+    </dl><script type="text/javascript">    jQuery('document').ready(function($){      $('.select2').select2();    if ($('#s_method_omnivalt_PARCEL_TERMINAL').prop('checked')){      $(".omnivalt-parcel-terminal-list" ).show();      $(".omnivalt-parcel-terminal-list select").addClass('required-entry');    }    $("input[name='shipping_method']").on('click',function(){      if ($(this).attr('id')== "s_method_omnivalt_PARCEL_TERMINAL"){        $(".omnivalt-parcel-terminal-list" ).show();        $(".omnivalt-parcel-terminal-list select").addClass('required-entry');      } else {        $(".omnivalt-parcel-terminal-list" ).hide();        $(".omnivalt-parcel-terminal-list select").removeClass('required-entry');      }    });  });</script>
+<?php endif; ?>

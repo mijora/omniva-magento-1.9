@@ -1,0 +1,148 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     base_default
+ * @copyright   Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php /** @var $this Mage_Checkout_Block_Onepage_Shipping_Method_Available */ ?>
+<?php $_shippingRateGroups = $this->getShippingRates(); ?>
+<?php if (!$_shippingRateGroups): ?>
+    <p><?php echo $this->__('Sorry, no quotes are available for this order at this time.') ?></p>
+<?php else: ?>
+    <dl class="sp-methods">
+    <?php $shippingCodePrice = array(); ?>
+    <?php $_sole = count($_shippingRateGroups) == 1; foreach ($_shippingRateGroups as $code => $_rates): ?>
+        <dt><?php echo $this->escapeHtml($this->getCarrierName($code)) ?></dt>
+        <dd>
+            <ul>
+            <?php $_sole = $_sole && count($_rates) == 1; foreach ($_rates as $_rate): ?>
+                <?php $shippingCodePrice[] = "'".$_rate->getCode()."':".(float)$_rate->getPrice(); ?>
+                <li>
+                   <?php if ($_rate->getErrorMessage()): ?>
+                    <ul class="messages"><li class="error-msg"><ul><li><?php echo $this->escapeHtml($_rate->getErrorMessage()) ?></li></ul></li></ul>
+                   <?php else: ?>
+                        <?php if ($_sole) : ?>
+                        <span class="no-display"><input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>" checked="checked" /></span>
+                        <?php else: ?>
+                          <input name="shipping_method" type="radio" value="<?php echo $_rate->getCode() ?>" id="s_method_<?php echo $_rate->getCode() ?>"<?php if($_rate->getCode()===$this->getAddressShippingMethod()) echo ' checked="checked"' ?> class="radio"/>
+                          <?php if ($_rate->getCode() === $this->getAddressShippingMethod()): ?>
+                            <script type="text/javascript">
+                                //<![CDATA[
+                                    lastPrice = <?php echo (float)$_rate->getPrice(); ?>;
+                                //]]>
+                            </script>
+                          <?php endif; ?>
+                        <?php endif; ?>
+                        <label for="s_method_<?php echo $_rate->getCode() ?>"><?php echo $this->escapeHtml($_rate->getMethodTitle()) ?>
+                        <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                        <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+                        <?php echo $_excl; ?>
+                        <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                            (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                        <?php endif; ?>
+                        </label>
+                   <?php endif ?>
+                </li>
+                <?php if ($_rate->getCode() == "omnivalt_PARCEL_TERMINAL"){ ?>
+                <li class = "omnivalt-parcel-terminal-list" style = "display:none;">
+                  <?php $obj = Mage::getModel('Omnivalt_Shipping_Model_Carrier'); 
+                  $country = $this->getQuote()->getShippingAddress()->getCountry();
+                  $locs = $obj->getCode('terminal',$country); ?>
+                  <?php $quote_terminal = (int)trim($this->getQuote()->getParcelTerminal()); ?>
+                  <select name = "omnivalt_parcel_terminal" id = "omnivalt_parcel_terminal_list" class = "select2" style = "width:100%">
+                    <option value = ""><?php echo __('Select parcel terminal'); ?></option>
+                    <?php
+                    $grouped_options = array();
+                    foreach ($locs as $key=>$loc){
+                      if (!isset($grouped_options[$loc['city']]))
+                        $grouped_options[$loc['city']] = array();
+                      $grouped_options[(string)$loc['city']][(string)$key] = $loc;
+                    }
+                    foreach ($grouped_options as $city=>$locs){
+                      echo '<optgroup label = "'.$city.'">';
+                      foreach ($locs as $key=>$loc){
+                        echo '<option value = "'.$key.'" '.($key == $quote_terminal?'selected':'').'>'.$loc['name'].'</option>';
+                      }
+                      echo '</optgroup>';
+                    }
+                    ?>
+                  </select>
+                </li>
+                <?php } ?>
+            <?php endforeach; ?>
+            </ul>
+        </dd>
+    <?php endforeach; ?>
+    </dl>
+<script type="text/javascript">
+//<![CDATA[
+    <?php if (!empty($shippingCodePrice)): ?>
+        var shippingCodePrice = {<?php echo implode(',',$shippingCodePrice); ?>};
+    <?php endif; ?>
+   
+    $$('input[type="radio"][name="shipping_method"]').each(function(el){
+        Event.observe(el, 'click', function(){
+            if (el.checked == true) {
+                var getShippingCode = el.getValue();
+                <?php if (!empty($shippingCodePrice)): ?>
+                    var newPrice = shippingCodePrice[getShippingCode];
+                    if (!lastPrice) {
+                        lastPrice = newPrice;
+                        quoteBaseGrandTotal += newPrice;
+                    }
+                    if (newPrice != lastPrice) {
+                        quoteBaseGrandTotal += (newPrice-lastPrice);
+                        lastPrice = newPrice;
+                    }
+                <?php endif; ?>
+                checkQuoteBaseGrandTotal = quoteBaseGrandTotal;
+                return false;
+            }
+       });
+    });
+    
+    jQuery('document').ready(function($){
+      $('.select2').select2();
+    if ($('#s_method_omnivalt_PARCEL_TERMINAL').prop('checked')){
+      $(".omnivalt-parcel-terminal-list" ).show();
+    }
+    $("input[name='shipping_method']").on('click',function(){
+      if ($(this).attr('id')== "s_method_omnivalt_PARCEL_TERMINAL"){
+        $(".omnivalt-parcel-terminal-list" ).show();
+      } else {
+        $(".omnivalt-parcel-terminal-list" ).hide();
+      }
+    });
+      
+    ShippingMethod.prototype.validate = ShippingMethod.prototype.validate.wrap(function(orig) {
+        if ($("input[name='shipping_method']:checked").attr('id') == "s_method_omnivalt_PARCEL_TERMINAL" && $('#co-shipping-method-form .omnivalt-parcel-terminal-list select').val() == ''){
+            alert('<?php echo Mage::helper('omnivalt_shipping')->__('Please select parcel terminal.');?>');
+            return false;
+        } 
+        return orig();
+    });
+    
+    });
+//]]>
+</script>
+<?php endif; ?>

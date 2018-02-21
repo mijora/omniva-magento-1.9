@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<config>
+    <menu>
+        <sales>    
+            <children>
+                <omnivalt_shipping module="omnivalt_shipping" translate="title">
+                    <title>Omniva manifest</title>
+                    <sort_order>35</sort_order>
+                    <action>adminhtml/omnivamanifest</action>
+                </omnivalt_shipping>
+            </children>
+        </sales>
+    </menu>
+</config>

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<layout>
+    <adminhtml_sales_order_create_load_block_shipping_method>
+        <reference name='shipping_method'>
+            <block type="adminhtml/sales_order_create_shipping_method_form" template="omnivalt_shipping/sales/order/create/shipping/method/form.phtml" name="form" />
+        </reference>
+    </adminhtml_sales_order_create_load_block_shipping_method>
+    <adminhtml_sales_order_create_index>
+        <reference name='shipping_method'>
+            <block type="adminhtml/sales_order_create_shipping_method_form" template="omnivalt_shipping/sales/order/create/shipping/method/form.phtml" name="form" />
+       </reference>
+    </adminhtml_sales_order_create_index>
+    <adminhtml_sales_order_view>
+        <reference name="order_tab_info">
+            <action method="setTemplate">
+                <template>omnivalt_shipping/sales/order/view/tab/info.phtml</template>
+            </action>
+        </reference>
+    </adminhtml_sales_order_view>
+    <adminhtml_omnivamanifest_index>
+        <reference name="head">
+            <action method="addJs"><script>lib/jquery/jquery-1.10.2.min.js</script></action>
+            <action method="addJs"><script>lib/jquery/noconflict.js</script></action>         
+        </reference>
+        <reference name="content">
+            <block type="core/template" name="manifest" template="omnivalt_shipping/manifest.phtml"/>
+        </reference>
+    </adminhtml_omnivamanifest_index>
+    <adminhtml_sales_order_index>
+        <reference name="head">
+            <action method="addJs"><script>lib/callOmniva.js</script></action>
+        </reference>
+    </adminhtml_sales_order_index>
+</layout>

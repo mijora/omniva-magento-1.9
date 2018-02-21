@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<layout>
+    <checkout_onepage_index>
+        <reference name='checkout.onepage.shipping_method.available'>
+            <action method='setTemplate'><template>omnivalt_shipping/checkout/onepage/shipping_method/available.phtml</template></action>
+        </reference>
+        <reference name="head">
+           <block type="core/text" name="cdn.select2">
+              <action method="setText">
+                <text>
+                   <![CDATA[<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" /><script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>]]>
+                </text>
+              </action>
+           </block>
+        </reference>
+    </checkout_onepage_index>
+    <checkout_onepage_shippingmethod>
+        <reference name='root'>
+            <action method='setTemplate'><template>omnivalt_shipping/checkout/onepage/shipping_method/available.phtml</template></action>
+        </reference>
+    </checkout_onepage_shippingmethod>
+    
+    <onestepcheckout_index_index>
+        <reference name="head">
+           <block type="core/text" name="cdn.select2">
+              <action method="setText">
+                <text>
+                   <![CDATA[<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" /><script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>]]>
+                </text>
+              </action>
+           </block>
+        </reference>
+        <reference name='onestepcheckout_shipping_method'>
+            <action method='setTemplate'><template>omnivalt_shipping/onestepcheckout/shipping_method.phtml</template></action>
+        </reference>
+    </onestepcheckout_index_index>
+    <onestepcheckout_onestepcheckout_shippingmethod>
+        <reference name='shippingmethod'>
+            <action method='setTemplate'><template>omnivalt_shipping/onestepcheckout/shipping_method.phtml</template></action>
+        </reference>
+    </onestepcheckout_onestepcheckout_shippingmethod>
+    <onestepcheckout_index_saveaddressonestepcheckout>
+        <reference name='onestepcheckout_shipping_method'>
+            <action method='setTemplate'><template>omnivalt_shipping/onestepcheckout/shipping_method.phtml</template></action>
+        </reference>
+    </onestepcheckout_index_saveaddressonestepcheckout>
+    
+</layout>
