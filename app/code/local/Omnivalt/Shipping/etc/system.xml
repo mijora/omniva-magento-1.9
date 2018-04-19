@@ -81,6 +81,42 @@
                             <show_in_store>0</show_in_store>
                             <validate>validate-number validate-zero-or-greater</validate>
                         </price2>
+                        <priceLV_C translate="label" >
+                            <label>LV Courier shipping price</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>23</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>validate-number validate-zero-or-greater</validate>
+                        </priceLV_C>
+                        <priceLV_pt translate="label" >
+                            <label>LV Parcel terminal shipping price</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>24</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>validate-number validate-zero-or-greater</validate>
+                        </priceLV_pt>
+                        <priceEE_C translate="label" >
+                            <label>EE Courier shipping price</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>25</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>validate-number validate-zero-or-greater</validate>
+                        </priceEE_C>
+                        <priceEE_pt translate="label" >
+                            <label>EE Parcel terminal shipping price</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>26</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <validate>validate-number validate-zero-or-greater</validate>
+                        </priceEE_pt>
                         <company translate="label" >
                             <label>Company name</label>
                             <frontend_type>text</frontend_type>
@@ -195,7 +231,7 @@
                         <pick_up_time_start translate="label">
                             <label>Pick up time start</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>24</sort_order>
+                            <sort_order>33</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
@@ -203,7 +239,7 @@
                         <pick_up_time_finish translate="label">
                             <label>Pick up time finish</label>
                             <frontend_type>text</frontend_type>
-                            <sort_order>25</sort_order>
+                            <sort_order>34</sort_order>
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>

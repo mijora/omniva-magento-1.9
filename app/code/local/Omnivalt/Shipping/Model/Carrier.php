@@ -119,10 +119,32 @@ class Omnivalt_Shipping_Model_Carrier extends Mage_Usa_Model_Shipping_Carrier_Ab
       $method->setMethodDescription($title);
       //Calculate shipping price for rate:
       //$shippingPrice = $this->_calculateShippingPrice($key); //You need to implement this method.
-      if ($key == "COURIER")
-        $shippingPrice = $this->getConfigData('price');
-      if ($key == "PARCEL_TERMINAL")
-        $shippingPrice = $this->getConfigData('price2');
+      $country_id = Mage::getSingleton('checkout/session')->getQuote()->getShippingAddress()->getData('country_id');
+
+      if ($key == "COURIER") {
+        switch($country_id) {
+          case 'LV':
+              $shippingPrice = $this->getConfigData('priceLV_C');
+              break;
+          case 'EE':
+              $shippingPrice = $this->getConfigData('priceEE_C');
+              break;
+          default:
+              $shippingPrice = $this->getConfigData('price');
+        }
+      }
+      if ($key == "PARCEL_TERMINAL"){
+        switch($country_id) {
+          case 'LV':
+              $shippingPrice = $this->getConfigData('priceLV_pt');
+              break;
+          case 'EE':
+              $shippingPrice = $this->getConfigData('priceEE_pt');
+              break;
+          default:
+              $shippingPrice = $this->getConfigData('price2');
+        }
+      }
       $method->setCost($shippingPrice);
       $method->setPrice($shippingPrice);
       //Finally add the method to the result.
