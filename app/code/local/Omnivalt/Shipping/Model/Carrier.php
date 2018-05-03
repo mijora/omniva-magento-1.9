@@ -463,9 +463,11 @@ class Omnivalt_Shipping_Model_Carrier extends Mage_Usa_Model_Shipping_Carrier_Ab
     if (time() > strtotime($pickDay . ' ' . $pickFinish))
       $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
     $name             = Mage::getStoreConfig('general/store_information/name');
+    /*
     if ($parcel_terminal)
       $receiver_address = '<address ' . $parcel_terminal . ' />';                          
     else
+      */
       $receiver_address = '<address postcode="' . $request->getRecipientAddressPostalCode() . '" ' . $parcel_terminal . ' deliverypoint="' . $request->getRecipientAddressCity() . '" country="' . $request->getRecipientAddressCountryCode() . '" street="' . $request->getRecipientAddressStreet1() . '" />';                          
     $xmlRequest = '
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">
