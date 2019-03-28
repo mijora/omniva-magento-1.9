@@ -5,10 +5,10 @@
 "Title","Nosaukums"
 "Courier shipping price","Kurjeru nosūtīšanas cena"
 "Parcel terminal shipping price","Nosūtīšanas termināla piegādes cena"
-"LV Courier shipping price","LV Kurjeru nosūtīšanas cena"
-"LV Parcel terminal shipping price","LV Nosūtīšanas termināla piegādes cena"
-"EE Courier shipping price","EE Kurjeru nosūtīšanas cena"
-"EE Parcel terminal shipping price","EE Nosūtīšanas termināla piegādes cena"
+"LV Courier shipping price","LV Kurjeru pakalpojuma cena"
+"LV Parcel terminal shipping price","LV Pakomāta pakalpojuma piegādes cena"
+"EE Courier shipping price","EE Kurjeru pakalpojuma cena"
+"EE Parcel terminal shipping price","EE Pakomāta pakalpojuma piegādes cena"
 "Pick up time start","Paņemt sākuma laiku"
 "Pick up time finish","Paņemt beigu laiku"
 "Company name","Uzņēmuma nosaukums"
@@ -41,3 +41,11 @@
 "Select orders","Izvēlēties pasūtījumus"
 "Select parcel terminal","Izvēlēties paku termināli"
 "Please select parcel terminal.","Lūdzu, izvēlieties paku termināli."
+Sender Address, Nosūtītāja adrese
+Parcel Nr, Parcel Nr
+Date, Datums
+Amount, Summa
+Weight, Svars
+Receiver, Saņēmēja adrese
+"Courier full name, signature", "Kurjera pilns nosaukums, paraksts"
+"Sender full name, signature", "Nosūtītāja pilns vārds, uzvārds"

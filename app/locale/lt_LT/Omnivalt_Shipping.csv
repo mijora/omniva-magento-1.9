@@ -44,3 +44,11 @@
 "Omniva courier called","Omniva kurjeris iškviestas"
 "Failed to call Omniva courier","Omniva kurjerio iškviesti nepavyko"
 "Call Omniva","Iškviesti Omniva"
+Sender Address,Siuntėjo adresas
+Parcel Nr, Siuntos numeris
+Date, Data
+Amount, Kiekis
+Weight, Svoris
+Receiver, Gavėjo adresas
+"Courier full name, signature", "Kurjerio vardas, pavardė, parašas"
+"Sender full name, signature", "Siuntėjo vardas, pavardė, parašas"
