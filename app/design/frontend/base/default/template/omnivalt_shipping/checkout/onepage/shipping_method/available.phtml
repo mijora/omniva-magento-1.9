@@ -67,9 +67,10 @@
                 <li class = "omnivalt-parcel-terminal-list" style = "display:none;">
                   <?php $obj = Mage::getModel('Omnivalt_Shipping_Model_Carrier'); 
                   $country = $this->getQuote()->getShippingAddress()->getCountry();
+                  $postcode = $this->getQuote()->getShippingAddress()->getData('postcode');
                   $locs = $obj->getCode('terminal',$country); ?>
                   <?php $quote_terminal = (int)trim($this->getQuote()->getParcelTerminal()); ?>
-                  <select name = "omnivalt_parcel_terminal" id = "omnivalt_parcel_terminal_list" class = "select2" style = "width:100%">
+                  <select name = "omnivalt_parcel_terminal" id = "omnivalt_parcel_terminal_list" class = "" style = "width:100%">
                     <option value = ""><?php echo __('Select parcel terminal'); ?></option>
                     <?php
                     $grouped_options = array();
@@ -78,15 +79,16 @@
                         $grouped_options[$loc['city']] = array();
                       $grouped_options[(string)$loc['city']][(string)$key] = $loc;
                     }
-                    foreach ($grouped_options as $city=>$locs){
+                    foreach ($grouped_options as $city=>$locations){
                       echo '<optgroup label = "'.$city.'">';
-                      foreach ($locs as $key=>$loc){
+                      foreach ($locations as $key=>$loc){
                         echo '<option value = "'.$key.'" '.($key == $quote_terminal?'selected':'').'>'.$loc['name'].'</option>';
                       }
                       echo '</optgroup>';
                     }
                     ?>
                   </select>
+                  <button type="button" id="show-omniva-map" class="btn btn-basic btn-sm omniva-btn" style = "display: none;"><?php echo __('Show in map'); ?> <img src = "<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/base/default/css/omniva/';?>sasi.png" title = "<?php echo __('Show in map'); ?>"/></button>
                 </li>
                 <?php } ?>
             <?php endforeach; ?>
@@ -120,9 +122,20 @@
             }
        });
     });
-    
+    var omnivadata = [];
+    omnivadata.text_select_terminal = '<?php echo __('Select parcel terminal'); ?>';
+    omnivadata.text_search_placeholder = '<?php echo __('Enter postcode'); ?>';
+    omnivadata.not_found = '<?php echo __('Place not found'); ?>';
+    omnivadata.text_enter_address = '<?php echo __('Enter postcode / address'); ?>';
+    omnivadata.text_show_in_map = '<?php echo __('Show in map'); ?>';
+    omnivadata.text_show_more = '<?php echo __('Show more'); ?>';
+    omnivadata.omniva_plugin_url = '<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN).'frontend/base/default/css/omniva/';?>';
+    omnivadata.current_country = '<?php echo $country; ?>';
+    //console.log(<?php echo json_encode($locs);?>);
     jQuery('document').ready(function($){
-      $('.select2').select2();
+        if ($('#omnivalt_parcel_terminal_list').length){
+            $('#omnivalt_parcel_terminal_list').omniva({showMap:1,omnivadata:omnivadata,terminals:<?php echo json_encode($locs);?>,postcode:'<?php echo $postcode;?>'});
+        }
     if ($('#s_method_omnivalt_PARCEL_TERMINAL').prop('checked')){
       $(".omnivalt-parcel-terminal-list" ).show();
     }
@@ -133,7 +146,7 @@
         $(".omnivalt-parcel-terminal-list" ).hide();
       }
     });
-      
+    
     ShippingMethod.prototype.validate = ShippingMethod.prototype.validate.wrap(function(orig) {
         if ($("input[name='shipping_method']:checked").attr('id') == "s_method_omnivalt_PARCEL_TERMINAL" && $('#co-shipping-method-form .omnivalt-parcel-terminal-list select').val() == ''){
             alert('<?php echo Mage::helper('omnivalt_shipping')->__('Please select parcel terminal.');?>');
@@ -145,4 +158,29 @@
     });
 //]]>
 </script>
+<div id="omnivaLtModal" class="modal">
+    <div class="omniva-modal-content">
+            <div class="omniva-modal-header">
+            <span class="close" id="terminalsModal">&times;</span>
+            <h5 style="display: inline"><?php echo __('Omniva parcel terminals'); ?></h5>
+            </div>
+            <div class="omniva-modal-body" style="/*overflow: hidden;*/">
+                <div id = "omnivaMapContainer"></div>
+                <div class="omniva-search-bar" >
+                    <h4 style="margin-top: 0px;"><?php echo __('Parcel terminals addresses'); ?></h4>
+                    <div id="omniva-search">
+                    <input type = "text" placeholder = "<?php echo __('Enter postcode'); ?>"/>
+                    <button type = "button" id="map-search-button"></button>                   
+                    <div class="omniva-autocomplete scrollbar" style = "display:none;"><ul></ul></div>
+                    </div>
+                    <div class = "omniva-back-to-list" style = "display:none;"><?php echo __('Back to list'); ?></div>
+                    <div class="found_terminals scrollbar" id="style-8">
+                      <ul>
+                      
+                      </ul>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
 <?php endif; ?>

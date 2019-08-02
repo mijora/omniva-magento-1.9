@@ -53,7 +53,7 @@ class Omnivalt_Shipping_Model_Carrier extends Mage_Usa_Model_Shipping_Carrier_Ab
     $this->_locationFile = Mage::getModuleDir('etc', 'Omnivalt_Shipping') . DS . 'locations.xml';
     
     //Mage::log($this->getConfigData('location_update'), null, 'omnivalt.log', true);
-    if (!$this->getConfigData('location_update') || ($this->getConfigData('location_update') + 3600 * 24 ) < time()) {
+    if (!$this->getConfigData('location_update') || ($this->getConfigData('location_update') + 3600 * 24 ) < time() || !file_exists($this->_locationFile)) {
       $url  = 'https://www.omniva.ee/locations.xml';
       $fp   = fopen($this->_locationFile, "w");
       $curl = curl_init();
@@ -145,6 +145,7 @@ class Omnivalt_Shipping_Model_Carrier extends Mage_Usa_Model_Shipping_Carrier_Ab
               $shippingPrice = $this->getConfigData('price2');
         }
       }
+
       $method->setCost($shippingPrice);
       $method->setPrice($shippingPrice);
       //Finally add the method to the result.
@@ -251,27 +252,48 @@ class Omnivalt_Shipping_Model_Carrier extends Mage_Usa_Model_Shipping_Carrier_Ab
     $locations_lt         = array();
     $locations_lv         = array();
     $locations_ee         = array();
+    $locations_array = $locationsXMLArray->LOCATION;
+    
     foreach ($locationsXMLArray->LOCATION as $loc_data) {
       
       if ($loc_data->A0_NAME == 'LT'){
         $locations_lt[(string) $loc_data->ZIP] = array(
           'name' => (string)$loc_data->NAME,
           'country' => (string)$loc_data->A0_NAME,
-          'city' => (string)$loc_data->A1_NAME
+          'city' => (string)$loc_data->A1_NAME,
+          'address' => (string)$loc_data->A2_NAME,
+          'x' => (string)$loc_data->Y_COORDINATE,
+          'y' => (string)$loc_data->X_COORDINATE,
+          'zip' => (string)$loc_data->ZIP,
+          'comment' => (string)$loc_data->COMMENT_LIT,
+          'distance' => 0
+          
         );
       }
       if ($loc_data->A0_NAME == 'LV'){
         $locations_lv[(string) $loc_data->ZIP] = array(
           'name' => (string)$loc_data->NAME,
           'country' => (string)$loc_data->A0_NAME,
-          'city' => (string)$loc_data->A1_NAME
+          'city' => (string)$loc_data->A1_NAME,
+          'address' => (string)$loc_data->A2_NAME,
+          'x' => (string)$loc_data->Y_COORDINATE,
+          'y' => (string)$loc_data->X_COORDINATE,
+          'zip' => (string)$loc_data->ZIP,
+          'comment' => (string)$loc_data->COMMENT_LAV,
+          'distance' => 0
         );
       }
       if ($loc_data->A0_NAME == 'EE'){
         $locations_ee[(string) $loc_data->ZIP] = array(
           'name' => (string)$loc_data->NAME,
           'country' => (string)$loc_data->A0_NAME,
-          'city' => (string)$loc_data->A1_NAME
+          'city' => (string)$loc_data->A1_NAME,
+          'address' => (string)$loc_data->A2_NAME,
+          'x' => (string)$loc_data->Y_COORDINATE,
+          'y' => (string)$loc_data->X_COORDINATE,
+          'zip' => (string)$loc_data->ZIP,
+          'comment' => (string)$loc_data->COMMENT_EST,
+          'distance' => 0
         );
       }
       
@@ -463,11 +485,10 @@ class Omnivalt_Shipping_Model_Carrier extends Mage_Usa_Model_Shipping_Carrier_Ab
     if (time() > strtotime($pickDay . ' ' . $pickFinish))
       $pickDay = date('Y-m-d', strtotime($pickDay . "+1 days"));
     $name             = Mage::getStoreConfig('general/store_information/name');
-    /*
-    if ($parcel_terminal)
+    /*if ($parcel_terminal)
       $receiver_address = '<address ' . $parcel_terminal . ' />';                          
     else
-      */
+    */
       $receiver_address = '<address postcode="' . $request->getRecipientAddressPostalCode() . '" ' . $parcel_terminal . ' deliverypoint="' . $request->getRecipientAddressCity() . '" country="' . $request->getRecipientAddressCountryCode() . '" street="' . $request->getRecipientAddressStreet1() . '" />';                          
     $xmlRequest = '
         <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://service.core.epmx.application.eestipost.ee/xsd">

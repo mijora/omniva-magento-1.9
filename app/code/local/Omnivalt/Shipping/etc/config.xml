@@ -2,7 +2,7 @@
 <config>
     <modules>
         <Omnivalt_Shipping>
-            <version>1.0.5</version>
+            <version>1.0.6</version>
         </Omnivalt_Shipping>
     </modules>
     <global>
@@ -138,7 +138,7 @@
             <omnivalt>
                 <user backend_model="adminhtml/system_config_backend_encrypted"/>
                 <password backend_model="adminhtml/system_config_backend_encrypted"/>
-                <gateway_url>https://217.159.234.93</gateway_url>
+                <gateway_url>https://edixml.post.ee</gateway_url>
                 <active>0</active>
                 <sallowspecific>1</sallowspecific>
                 <allowed_methods>PARCEL_TERMINAL,COURIER</allowed_methods>    
